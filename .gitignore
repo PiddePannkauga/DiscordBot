@@ -17,6 +17,12 @@
 .idea/**/gradle.xml
 .idea/**/libraries
 
+PiddesBot/.idea/libraries/**
+PiddesBot/apikey.txt
+PiddesBot/bottoken
+PiddesBot/src/main/resources/client_secrets.json
+
+
 # CMake
 cmake-build-debug/
 cmake-build-release/

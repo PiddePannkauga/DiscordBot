@@ -1,4 +1,4 @@
-package Bot;
+package Bot.Listeners;
 
 import sx.blah.discord.api.events.IListener;
 import sx.blah.discord.handle.impl.events.ReadyEvent;

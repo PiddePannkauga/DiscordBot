@@ -1,4 +1,4 @@
-package Bot;
+package Bot.Listeners;
 
 
 import Utility.FileReader;

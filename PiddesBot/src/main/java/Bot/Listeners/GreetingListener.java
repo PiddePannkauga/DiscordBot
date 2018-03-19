@@ -1,4 +1,4 @@
-package Bot;
+package Bot.Listeners;
 
 import com.vdurmont.emoji.Emoji;
 import com.vdurmont.emoji.EmojiLoader;

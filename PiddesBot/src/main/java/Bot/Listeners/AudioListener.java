@@ -1,6 +1,8 @@
-package Bot;
+package Bot.Listeners;
 
 
+import Bot.Lavalplayer.AudioProvider;
+import Bot.Lavalplayer.TrackScheduler;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 

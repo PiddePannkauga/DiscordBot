@@ -1,4 +1,11 @@
 import Bot.*;
+import Bot.Lavalplayer.AudioProvider;
+import Bot.Lavalplayer.TrackScheduler;
+import Bot.Listeners.AudioListener;
+import Bot.Listeners.CommandHandler;
+import Bot.Listeners.GreetingListener;
+import Bot.Listeners.InterfaceListener;
+import Utility.FileReader;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
@@ -11,7 +18,7 @@ import sx.blah.discord.api.events.EventDispatcher;
  */
 public class Main {
 
-    private static final String TOKEN="NDE2OTA0Mjg3NTU4MzAzNzQ0.DXl2XA.SbBYsBSZXX_ZSr9CtyNxeosJ0tw";
+    private static final String TOKEN= FileReader.readFile("bottoken");
     public static void main(String[] args) {
         CommandHandler message =  new CommandHandler();
         IDiscordClient bot = Client.createClient(TOKEN, true);
