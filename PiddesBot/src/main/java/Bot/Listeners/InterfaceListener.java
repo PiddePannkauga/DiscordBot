@@ -8,13 +8,12 @@ import sx.blah.discord.util.RateLimitException;
 /**
  * @author Petter Månsson 2018-03-01
  */
-public class InterfaceListener implements IListener<ReadyEvent> { // The event type in IListener<> can be any class which extends Event
+public class InterfaceListener implements IListener<ReadyEvent> {
 
     @Override
-    public void handle(ReadyEvent event) { // This is called when the ReadyEvent is dispatched
+    public void handle(ReadyEvent event) {
         try {
-            // This WILL work. The ReadyEvent has been fired and the bot is ready to interact with Discord.
-            event.getClient().changeUsername("PidorTown Polis");
+            event.getClient().changeUsername("PidorTown AI");
         } catch (RateLimitException | DiscordException e) {
             e.printStackTrace();
         }

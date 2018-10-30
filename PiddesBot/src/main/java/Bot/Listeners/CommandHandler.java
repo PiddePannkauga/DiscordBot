@@ -6,6 +6,7 @@ import sx.blah.discord.api.events.IListener;
 
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageEvent;
 
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 
@@ -18,36 +19,57 @@ import java.util.Calendar;
 /**
  * @author Petter Månsson 2018-03-01
  */
-public class CommandHandler implements IListener<MessageEvent> {
+public class CommandHandler implements IListener<MessageReceivedEvent> {
 
     private String law = FileReader.readFile("PidorTownLag.txt");
+    private String commandList = FileReader.readFile("commandlist.txt");
 
     @Override
-    public void handle(MessageEvent event) {
+    public void handle(MessageReceivedEvent event) {
+        System.out.println("MessageEvent");
+        IMessage message = event.getMessage();
+        IChannel channel = message.getChannel();
+        String command = message.getContent();
 
-        IMessage message = event.getMessage(); // Gets the message from the event object NOTE: This is not the content of the message, but the object itself
-        IChannel channel = message.getChannel(); // Gets the channel in which this message was sent.
+        switch(command){
+            case "!lag": lag(message,channel);
+                break;
+            case "!erdetfredag": fredag(message,channel);
+                break;
+            case "!commands": commandList(message,channel);
+                break;
 
-        if (message.getContent().equals("!Lag")) {
-            lag(message,channel);
-        }
-        if(message.getContent().toLowerCase().contains("!erdetfredag")) {
-            fredag(message,channel);
         }
 
     }
 
     private void lag(IMessage message, IChannel channel){
         try {
-            // Builds (sends) and new message in the channel that the original message was sent with the content of the original message.
+
             new MessageBuilder(message.getClient()).withChannel(channel).withContent(law).build();
-        } catch (RateLimitException e) { // RateLimitException thrown. The bot is sending messages too quickly!
+        } catch (RateLimitException e) {
             System.err.print("Sending messages too quickly!");
             e.printStackTrace();
-        } catch (DiscordException e) { // DiscordException thrown. Many possibilities. Use getErrorMessage() to see what went wrong.
-            System.err.print(e.getErrorMessage()); // Print the error message sent by Discord
+        } catch (DiscordException e) {
+            System.err.print(e.getErrorMessage());
             e.printStackTrace();
-        } catch (MissingPermissionsException e) { // MissingPermissionsException thrown. The bot doesn't have permission to send the message!
+        } catch (MissingPermissionsException e) {
+            System.err.print("Missing permissions for channel!");
+            e.printStackTrace();
+        }
+    }
+
+    private void commandList(IMessage message, IChannel channel){
+        try {
+
+            new MessageBuilder(message.getClient()).withChannel(channel).withContent(commandList).build();
+        } catch (RateLimitException e) {
+            System.err.print("Sending messages too quickly!");
+            e.printStackTrace();
+        } catch (DiscordException e) {
+            System.err.print(e.getErrorMessage());
+            e.printStackTrace();
+        } catch (MissingPermissionsException e) {
             System.err.print("Missing permissions for channel!");
             e.printStackTrace();
         }
@@ -55,21 +77,20 @@ public class CommandHandler implements IListener<MessageEvent> {
 
     private void fredag(IMessage message, IChannel channel){
         Calendar cal = Calendar.getInstance();
-
         try {
-            // Builds (sends) and new message in the channel that the original message was sent with the content of the original message.
+
             if(cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
                 new MessageBuilder(message.getClient()).withChannel(channel).withContent("JA").build();
             }else{
                 new MessageBuilder(message.getClient()).withChannel(channel).withContent("NAJ").build();
             }
-        } catch (RateLimitException e) { // RateLimitException thrown. The bot is sending messages too quickly!
+        } catch (RateLimitException e) {
             System.err.print("Sending messages too quickly!");
             e.printStackTrace();
-        } catch (DiscordException e) { // DiscordException thrown. Many possibilities. Use getErrorMessage() to see what went wrong.
-            System.err.print(e.getErrorMessage()); // Print the error message sent by Discord
+        } catch (DiscordException e) {
+            System.err.print(e.getErrorMessage());
             e.printStackTrace();
-        } catch (MissingPermissionsException e) { // MissingPermissionsException thrown. The bot doesn't have permission to send the message!
+        } catch (MissingPermissionsException e) {
             System.err.print("Missing permissions for channel!");
             e.printStackTrace();
         }

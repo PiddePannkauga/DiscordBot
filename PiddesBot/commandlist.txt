@@ -1,0 +1,11 @@
+﻿CommandList
+!lag - Skriver ut PidorTowns Heliga Lag
+!erdetfredag - Svarar på om det är fredag eller inte fredag
+
+JUKEBOX
+Alla kommandon rörande denna del skickas som ett DM till PidorTown AI
+
+!musicjoin - boten gör med i den voicekanal man befinner sig i
+!kö youtubelänk - viktigt med mellanslag efter kommando men endast ett
+!skip - bytar till nästa låt
+!titel - skriver ut titel på youtube video som spelas just nu.

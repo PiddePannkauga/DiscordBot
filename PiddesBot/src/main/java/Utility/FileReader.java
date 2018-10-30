@@ -17,20 +17,29 @@ public class FileReader {
 
     public static String readFile(String fnam) {
         StringBuilder string = new StringBuilder();
+        int wordcount = 0;
 
         try {
-        BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(fnam)));
+            BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(fnam)));
 
-        while (true) {
-            String word = r.readLine();
-            if (word == null) {
-                break;
+            while (true) {
+                String word = r.readLine();
+                if (word == null) {
+                    break;
+                }
+                if (wordcount == 0) {
+                    string.append(word);
+                    wordcount++;
+                } else {
+                    string.append("\n" + word);
+                }
             }
-            string.append(word+"\n");
+        }catch(Exception e){
+
         }
-            }catch(Exception e){
 
-            }
+
+
         return string.toString();
     }
 
@@ -38,14 +47,14 @@ public class FileReader {
         ArrayList<String> strings = new ArrayList<>();
 
         try {
-             List<String> productLines = Files.readAllLines(java.nio.file.Paths.get(fnam), StandardCharsets.UTF_8);
+            List<String> productLines = Files.readAllLines(java.nio.file.Paths.get(fnam), StandardCharsets.UTF_8);
 
-                for (String line : productLines) {
-                    String[] tokens = line.split(" ");
-                    for(String words : tokens) {
-                        strings.add(words);
-                    }
+            for (String line : productLines) {
+                String[] tokens = line.split(" ");
+                for(String words : tokens) {
+                    strings.add(words);
                 }
+            }
 
 
         }catch(Exception e){

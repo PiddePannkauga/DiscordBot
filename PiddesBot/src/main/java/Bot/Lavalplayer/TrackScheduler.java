@@ -7,6 +7,8 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 
+import java.util.Queue;
+import java.util.Stack;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -17,10 +19,12 @@ public class TrackScheduler extends AudioEventAdapter {
 
     private AudioPlayer player;
     private BlockingQueue<AudioTrack> trackQueue;
+    private BlockingQueue<String> titleQueue = new LinkedBlockingDeque<>();
 
 
     public TrackScheduler(AudioPlayer player){
         this.player = player;
+        player.setVolume(30);
         trackQueue = new LinkedBlockingDeque<>();
     }
 
@@ -32,24 +36,43 @@ public class TrackScheduler extends AudioEventAdapter {
         if (!player.startTrack(track, true)) {
             trackQueue.offer(track);
         }
+        titleQueue.add(track.getInfo().title);
     }
+
     public void nextTrack() {
         // Start the next track, regardless of if something is already playing or not. In case queue was empty, we are
         // giving null to startTrack, which is a valid argument and will simply stop the player.
         player.startTrack(trackQueue.poll(), false);
+        titleQueue.remove();
+
     }
 
+    public void pause(){
+        player.setPaused(true);
+    }
+
+    public void resumeSong(){
+        player.setPaused(false);
+        System.out.println(player.isPaused());
+    }
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
         if (endReason.mayStartNext) {
-                nextTrack();
+            nextTrack();
         }
+
 
     }
 
     public void play(){
+        player.setPaused(false);
         nextTrack();
+    }
+
+    public String peekTitle(){
+        String title = titleQueue.peek();
+        return title;
     }
 
 

@@ -20,29 +20,55 @@ import sx.blah.discord.util.RateLimitException;
  * @author Petter Månsson 2018-03-01
  */
 public class GreetingListener implements IListener<PresenceUpdateEvent> {
+
+    private int greetingsMessageCounter = 0;
+    private static int ALLOWED_NUMBER_OF_GREETINGS = 1;
+    private String mayor = "Knackehaxan";
+
     @Override
     public void handle(PresenceUpdateEvent presenceUpdateEvent) {
 
         IPresence presence = presenceUpdateEvent.getNewPresence();
         IChannel channel = presenceUpdateEvent.getClient().getChannels().get(0);
-        IEmoji emoji = presenceUpdateEvent.getClient().getGuilds().get(0).getEmojiByName("Pochinkipidde");
+        IEmoji pochinkipidde = presenceUpdateEvent.getClient().getGuilds().get(0).getEmojiByName("Pochinkipidde");
         String user = presenceUpdateEvent.getUser().getName();
-        System.out.println(presenceUpdateEvent.getUser().getName());
-        if(presence.getStatus().equals(StatusType.ONLINE)&& user.equals("Knackehaxan")){
-            try {
-                // Builds (sends) and new message in the channel that the original message was sent with the content of the original message.
-                new MessageBuilder(presenceUpdateEvent.getClient()).withChannel(channel).withContent(emoji+ " B0RGMästarN^ har frälsat oss med sin heliga närvaro! " + emoji).build();
-            } catch (RateLimitException e) { // RateLimitException thrown. The bot is sending messages too quickly!
-                System.err.print("Sending messages too quickly!");
-                e.printStackTrace();
-            } catch (DiscordException e) { // DiscordException thrown. Many possibilities. Use getErrorMessage() to see what went wrong.
-                System.err.print(e.getErrorMessage()); // Print the error message sent by Discord
-                e.printStackTrace();
-            } catch (MissingPermissionsException e) { // MissingPermissionsException thrown. The bot doesn't have permission to send the message!
-                System.err.print("Missing permissions for channel!");
-                e.printStackTrace();
-            }
 
+        boolean isMayor = checkMayor(user);
+
+        if(isMayor){
+            resetGreetingsCounter(presence);
+            if(greetingsMessageCounter < ALLOWED_NUMBER_OF_GREETINGS) {
+                try {
+
+                    new MessageBuilder(presenceUpdateEvent.getClient()).withChannel(channel).withContent(pochinkipidde + " B0RGMästarN^ har frälsat oss med sin heliga närvaro! " + pochinkipidde).build();
+                } catch (RateLimitException e) {
+                    System.err.print("Sending messages too quickly!");
+                    e.printStackTrace();
+                } catch (DiscordException e) {
+                    System.err.print(e.getErrorMessage());
+                    e.printStackTrace();
+                } catch (MissingPermissionsException e) {
+                    System.err.print("Missing permissions for channel!");
+                    e.printStackTrace();
+                }
+                greetingsMessageCounter++;
+            }
+        }
+
+    }
+
+    private boolean checkMayor(String user){
+        if(user.equals(mayor)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    private void resetGreetingsCounter(IPresence presence){
+        boolean switchedToOffline = presence.getStatus().equals(StatusType.OFFLINE);
+        if(switchedToOffline){
+            greetingsMessageCounter = 0;
         }
     }
 }

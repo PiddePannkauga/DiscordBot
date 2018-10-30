@@ -13,19 +13,24 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventDispatcher;
 
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.file.Files;
+
 /**
  * @author Petter Månsson 2018-03-01
  */
 public class Main {
 
-    private static final String TOKEN= FileReader.readFile("bottoken");
+
     public static void main(String[] args) {
         CommandHandler message =  new CommandHandler();
-        IDiscordClient bot = Client.createClient(TOKEN, true);
+
+        IDiscordClient bot = Client.createClient(FileReader.readFile("bottoken.txt"),true);
 
         AudioPlayerManager playerManager = new DefaultAudioPlayerManager();
         AudioSourceManagers.registerRemoteSources(playerManager);
-        playerManager.setFrameBufferDuration(30);
         AudioPlayer player = playerManager.createPlayer();
         AudioProvider provider = new AudioProvider(player);
         TrackScheduler scheduler = new TrackScheduler(player);
@@ -36,6 +41,7 @@ public class Main {
         dispatcher.registerListener(new GreetingListener());
         dispatcher.registerListener(message);
         dispatcher.registerListener(new AudioListener(scheduler,playerManager,provider,bot));
+
 
 
     }
