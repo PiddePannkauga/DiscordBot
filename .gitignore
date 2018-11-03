@@ -1,4 +1,4 @@
-PiddesBot/target
+target
 
 *.class
 
@@ -21,8 +21,8 @@ PiddesBot/target
 .idea/**/gradle.xml
 .idea/**/libraries
 
-PiddesBot/.idea/libraries/**
-PiddesBot/src/main/resources/client_secrets.json
+.idea/libraries/**
+src/main/resources/client_secrets.json
 
 
 # CMake
