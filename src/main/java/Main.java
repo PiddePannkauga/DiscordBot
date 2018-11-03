@@ -23,7 +23,6 @@ import java.nio.file.Files;
  */
 public class Main {
 
-
     public static void main(String[] args) {
         CommandHandler message =  new CommandHandler();
 
@@ -41,8 +40,6 @@ public class Main {
         dispatcher.registerListener(new GreetingListener());
         dispatcher.registerListener(message);
         dispatcher.registerListener(new AudioListener(scheduler,playerManager,provider,bot));
-
-
 
     }
 }
