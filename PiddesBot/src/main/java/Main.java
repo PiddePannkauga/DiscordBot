@@ -27,7 +27,7 @@ public class Main {
     public static void main(String[] args) {
         CommandHandler message =  new CommandHandler();
 
-        IDiscordClient bot = Client.createClient(FileReader.readFile("bottoken.txt"),true);
+        IDiscordClient bot = Client.createClient(System.getenv("BOT_TOKEN"),true);
 
         AudioPlayerManager playerManager = new DefaultAudioPlayerManager();
         AudioSourceManagers.registerRemoteSources(playerManager);

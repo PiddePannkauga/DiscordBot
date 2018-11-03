@@ -13,6 +13,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
 /**
+ * Handles all queueing of tracks and operations on the musicqueue.
+ *
  * @author Petter Månsson 2018-03-03
  */
 public class TrackScheduler extends AudioEventAdapter {
@@ -61,8 +63,6 @@ public class TrackScheduler extends AudioEventAdapter {
         if (endReason.mayStartNext) {
             nextTrack();
         }
-
-
     }
 
     public void play(){
@@ -73,6 +73,28 @@ public class TrackScheduler extends AudioEventAdapter {
     public String peekTitle(){
         String title = titleQueue.peek();
         return title;
+    }
+
+    public String showQueue(){
+        StringBuilder queue = new StringBuilder();
+
+        queue.append("Currently playing: " + peekTitle() + "\n");
+        for(AudioTrack queueObject : trackQueue) {
+            long durationInMillis = queueObject.getDuration();
+            long second = (durationInMillis / 1000) % 60;
+            long minute = (durationInMillis / (1000 * 60)) % 60;
+            long hour = (durationInMillis / (1000 * 60 * 60)) % 24;
+
+            if(hour <= 0){
+                String duration = String.format("%02d:%02d", minute, second);
+                queue.append(queueObject.getInfo().title + " | Duration: " + duration + "\n");
+            }else {
+                String duration = String.format("%02d:%02d:%02d", hour, minute, second);
+                queue.append(queueObject.getInfo().title + " | Duration: " + duration + "\n");
+            }
+
+        }
+        return queue.toString();
     }
 
 

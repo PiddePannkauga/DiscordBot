@@ -15,9 +15,14 @@ import sx.blah.discord.api.events.IListener;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.*;
+import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MessageBuilder;
+import sx.blah.discord.util.MissingPermissionsException;
+import sx.blah.discord.util.RateLimitException;
 
 /**
+ * Class handling all music related commands and events.
+ *
  * @author Petter Månsson 2018-03-03
  */
 public class AudioListener implements IListener<MessageReceivedEvent> {
@@ -40,6 +45,7 @@ public class AudioListener implements IListener<MessageReceivedEvent> {
     public void handle(MessageReceivedEvent messageEvent) {
         IMessage message = messageEvent.getMessage();
         IGuild guild = bot.getGuilds().get(0);
+        IChannel channel = message.getChannel();
 
         String[] command = message.getContent().split(" ");
         String botCommand = command[0];
@@ -66,7 +72,9 @@ public class AudioListener implements IListener<MessageReceivedEvent> {
             case "!title":
                 fetchTitle(messageEvent);
                 break;
-
+            case "!queue":
+                showQueue(message,channel);
+                break;
 
         }
 
@@ -136,33 +144,37 @@ public class AudioListener implements IListener<MessageReceivedEvent> {
         return song.contains("//www.");
     }
 
-    private boolean messageIsFromDM(MessageReceivedEvent messageEvent ){
-        IChannel messageOriginChannel = messageEvent.getChannel();
-        IChannel guildChannel = bot.getChannels().get(0);
+    private void buildSongRequest(String[] songRequest) {
 
-        if(messageOriginChannel != guildChannel){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    private void buildSongRequest(String[] command) {
-
-        if (isLink(command[1])) {
-            queueSong(command[1]);
+        if (isLink(songRequest[1])) {
+            queueSong(songRequest[1]);
         } else {
 
             StringBuilder requestString = new StringBuilder();
-            for (int i = 1; i < command.length; i++) {
-                if (i == command.length-1) {
-                    requestString.append(command[i]);
+            for (int i = 1; i < songRequest.length; i++) {
+                if (i == songRequest.length-1) {
+                    requestString.append(songRequest[i]);
                 } else {
-                    requestString.append(command[i] + "_");
+                    requestString.append(songRequest[i] + "_");
                 }
             }
-            String songRequest = requestString.toString();
-            queueSong(youtubeApi.youtubeURLfromSearch(songRequest));
+            String readyToSearchSong = requestString.toString();
+            queueSong(youtubeApi.youtubeURLfromSearch(readyToSearchSong));
+        }
+    }
+
+    private void showQueue(IMessage message, IChannel channel){
+        try {
+            new MessageBuilder(message.getClient()).withChannel(channel).withContent(trackScheduler.showQueue()).build();
+        } catch (RateLimitException e) {
+            System.err.print("Sending messages too quickly!");
+            e.printStackTrace();
+        } catch (DiscordException e) {
+            System.err.print(e.getErrorMessage());
+            e.printStackTrace();
+        } catch (MissingPermissionsException e) {
+            System.err.print("Missing permissions for channel!");
+            e.printStackTrace();
         }
     }
 
