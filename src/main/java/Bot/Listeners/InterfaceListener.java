@@ -13,7 +13,7 @@ public class InterfaceListener implements IListener<ReadyEvent> {
     @Override
     public void handle(ReadyEvent event) {
         try {
-            event.getClient().changeUsername("PidorTown AI");
+            event.getClient().changeUsername(System.getenv("BOT_NAME"));
         } catch (RateLimitException | DiscordException e) {
             e.printStackTrace();
         }

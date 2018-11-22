@@ -21,9 +21,7 @@ import sx.blah.discord.util.RateLimitException;
  */
 public class GreetingListener implements IListener<PresenceUpdateEvent> {
 
-    private int greetingsMessageCounter = 0;
-    private static int ALLOWED_NUMBER_OF_GREETINGS = 1;
-    private String mayor = "Knackehaxan";
+    private String mayor = System.getenv("CHANNEL_MAYOR");
 
     @Override
     public void handle(PresenceUpdateEvent presenceUpdateEvent) {
@@ -36,11 +34,10 @@ public class GreetingListener implements IListener<PresenceUpdateEvent> {
         boolean isMayor = checkMayor(user);
 
         if(isMayor){
-            resetGreetingsCounter(presence);
-            if(greetingsMessageCounter < ALLOWED_NUMBER_OF_GREETINGS) {
+            if(presence.getStatus().equals(StatusType.ONLINE)) {
                 try {
 
-                    new MessageBuilder(presenceUpdateEvent.getClient()).withChannel(channel).withContent(pochinkipidde + " B0RGMästarN^ har frälsat oss med sin heliga närvaro! " + pochinkipidde).build();
+                    new MessageBuilder(presenceUpdateEvent.getClient()).withChannel(channel).withContent(pochinkipidde + " B0RGMästarN^ har frälst oss med sin heliga närvaro! " + pochinkipidde).build();
                 } catch (RateLimitException e) {
                     System.err.print("Sending messages too quickly!");
                     e.printStackTrace();
@@ -51,7 +48,7 @@ public class GreetingListener implements IListener<PresenceUpdateEvent> {
                     System.err.print("Missing permissions for channel!");
                     e.printStackTrace();
                 }
-                greetingsMessageCounter++;
+
             }
         }
 
@@ -65,10 +62,4 @@ public class GreetingListener implements IListener<PresenceUpdateEvent> {
         }
     }
 
-    private void resetGreetingsCounter(IPresence presence){
-        boolean switchedToOffline = presence.getStatus().equals(StatusType.OFFLINE);
-        if(switchedToOffline){
-            greetingsMessageCounter = 0;
-        }
-    }
 }
